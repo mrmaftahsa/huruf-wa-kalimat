@@ -1,0 +1,59 @@
+name: Build Android APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/android.yml'
+      - 'android/**'
+      - 'capacitor.config.ts'
+      - 'index.html'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'public/**'
+      - 'src/**'
+      - 'vite.config.ts'
+
+permissions:
+  contents: read
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - name: Install Android SDK components
+        run: sdkmanager 'platforms;android-36' 'build-tools;36.0.0'
+      - run: npm ci
+      - run: npm test
+      - run: npm run android:sync
+      - name: Assemble signed debug APK
+        working-directory: android
+        run: ./gradlew --no-daemon assembleDebug
+      - name: Verify Android signature and bundled game
+        run: |
+          apk=android/app/build/outputs/apk/debug/app-debug.apk
+          build_tools="$ANDROID_HOME/build-tools/36.0.0"
+          "$build_tools/apksigner" verify --print-certs "$apk"
+          "$build_tools/aapt" dump badging "$apk" > apk-info.txt
+          grep -F "package: name='com.mrmaftahsa.hurufwakalimat'" apk-info.txt
+          grep -F "sdkVersion:'24'" apk-info.txt
+          unzip -p "$apk" assets/public/index.html | grep -F '<title>حروف وكلمات</title>'
+          mkdir apk-artifact
+          cp "$apk" apk-artifact/huruf-wa-kalimat.apk
+          cd apk-artifact
+          sha256sum huruf-wa-kalimat.apk > huruf-wa-kalimat.apk.sha256
+      - uses: actions/upload-artifact@v4
+        with:
+          name: huruf-wa-kalimat-android
+          path: apk-artifact/
+          if-no-files-found: error

@@ -39,3 +39,9 @@ In the repository's **Settings → Pages**, select **GitHub Actions** as the sou
 Picture clues use unmodified Key (U+1F511), Sun With Face (U+1F31E), and Bicycle (U+1F6B2) graphics from [OpenMoji](https://openmoji.org/) by the OpenMoji contributors, licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). See [the image license text](public/licenses/openmoji.txt).
 
 The [Vazirmatn](https://github.com/rastikerdar/vazirmatn) font is distributed under the [SIL Open Font License 1.1](public/licenses/vazirmatn.txt).
+
+## Android APK
+
+[Download the Android APK](https://github.com/mrmaftahsa/huruf-wa-kalimat/releases/latest/download/huruf-wa-kalimat.apk) from GitHub Releases for Android 7.0 or newer. This is an installable debug build for sideloading. The game is bundled into the Android app and can be played offline. Browser and APK progress are stored separately.
+
+The **Build Android APK** workflow builds a signed debug APK and verifies its signature and bundled assets. To build locally with JDK 21 and Android SDK 36, run `npm ci`, `npm run android:sync`, then `./gradlew assembleDebug` from the `android` directory.
