@@ -90,7 +90,8 @@ button:disabled { cursor: default; }
 .level-end { margin-inline-start: auto; color: var(--muted); display: flex; }
 .stars { display: inline-flex; gap: 4px; color: #9b5f11; }
 .level-end .stars svg { width: 13px; }
-.footer { text-align: center; font-size: .86rem; color: var(--muted); padding: 30px 8px; }
+.footer { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 14px; text-align: center; font-size: .86rem; color: var(--muted); padding: 30px 8px; }
+.footer a { text-decoration: underline; text-underline-offset: 3px; }
 .game-page { width: min(100% - 32px, 850px); margin: 24px auto 42px; }
 .clue-page { max-width: 514px; }
 .back { display: inline-flex; align-items: center; gap: 7px; font-size: .9rem; font-weight: 720; color: var(--plum); padding-block: 4px; }
@@ -114,7 +115,7 @@ button:disabled { cursor: default; }
 .clue-row strong, .clue-row small { display: block; }
 .clue-row small { color: var(--muted); font-size: .76rem; }
 .clue-list .primary { margin-top: 5px; }
-.prompt-card { min-height: 154px; display: grid; place-items: center; background: #eaddE7; border: 1px solid #e3d1e0; border-radius: 19px; padding: 20px; }
+.prompt-card { min-height: 154px; display: grid; place-items: center; background: #eadde7; border: 1px solid #e3d1e0; border-radius: 19px; padding: 20px; }
 .prompt-card p { text-align: center; font-size: clamp(1.15rem, 4.4vw, 1.65rem); margin: 0; font-weight: 750; }
 .prompt-card.picture { background: radial-gradient(ellipse, #fff9ef 0%, #f1dfdf 85%); min-height: 176px; padding: 6px; }
 .picture img { display: block; width: min(46%, 170px); height: auto; }

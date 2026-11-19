@@ -34,6 +34,8 @@ Progress is stored separately for each level in browser local storage.
 
 In the repository's **Settings → Pages**, select **GitHub Actions** as the source. The deployment workflow runs on pushes to `main` and can also be run manually. The app uses hash routes and relative asset URLs for the repository subpath.
 
-## Image credits
+## Credits
 
-Picture clues use unmodified Key (U+1F511), Sun With Face (U+1F31E), and Bicycle (U+1F6B2) graphics from [OpenMoji](https://openmoji.org/) by the OpenMoji contributors, licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). See [the image license text](src/assets/OPENMOJI-LICENSE.txt).
+Picture clues use unmodified Key (U+1F511), Sun With Face (U+1F31E), and Bicycle (U+1F6B2) graphics from [OpenMoji](https://openmoji.org/) by the OpenMoji contributors, licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). See [the image license text](public/licenses/openmoji.txt).
+
+The [Vazirmatn](https://github.com/rastikerdar/vazirmatn) font is distributed under the [SIL Open Font License 1.1](public/licenses/vazirmatn.txt).

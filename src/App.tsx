@@ -26,8 +26,9 @@ function Header() {
 }
 
 function Home({ save }: { save: Save }) {
-  const available = levels.find((level) => (save[level.id]?.solved.length ?? 0) < level.entries.length) ?? levels[0]
-  const hasProgress = !!save[available.id]
+  const available = levels.find((level) => (save[level.id]?.solved.length ?? 0) < level.entries.length)
+  const hasProgress = available && !!save[available.id]
+  const startPath = available ? `/level/${available.id}` : '/#levels'
   const { hash } = useLocation()
   useEffect(() => {
     if (hash === '#levels') document.getElementById('levels')?.scrollIntoView()
@@ -38,7 +39,7 @@ function Home({ save }: { save: Save }) {
         <div className="eyebrow"><Grid2X2 size={16} aria-hidden /> لعبة كلمات متقاطعة</div>
         <h1>حروف وكلمات</h1>
         <p>أكمل العبارات، خمّن الصور، واملأ شبكة الكلمات حرفًا حرفًا.</p>
-        <Link className="primary hero-button" to={`/level/${available.id}`}>{hasProgress ? 'تابع اللعب' : 'ابدأ اللعب'}<ArrowLeft size={19} aria-hidden /></Link>
+        <Link className="primary hero-button" to={startPath}>{available ? (hasProgress ? 'تابع اللعب' : 'ابدأ اللعب') : 'راجع المستويات'}<ArrowLeft size={19} aria-hidden /></Link>
       </div>
       <div className="hero-art" aria-hidden="true">
         <div className="hero-grid" dir="ltr">
@@ -69,7 +70,10 @@ function Home({ save }: { save: Save }) {
         })}
       </div>
     </section>
-    <footer className="footer">يُحفظ تقدّمك تلقائيًا على هذا الجهاز.</footer>
+    <footer className="footer">
+      <span>يُحفظ تقدّمك تلقائيًا على هذا الجهاز.</span>
+      <a href="https://github.com/mrmaftahsa/huruf-wa-kalimat#credits">مصادر الصور والخط</a>
+    </footer>
   </main>
 }
 
