@@ -1,0 +1,53 @@
+name: Publish Android APK
+
+on:
+  workflow_dispatch:
+    inputs:
+      build_run_id:
+        description: Successful Android build run ID
+        required: true
+        type: string
+
+permissions:
+  actions: read
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    env:
+      GH_TOKEN: ${{ github.token }}
+      BUILD_RUN_ID: ${{ inputs.build_run_id }}
+    steps:
+      - name: Verify Android build provenance
+        id: build
+        run: |
+          [[ "$BUILD_RUN_ID" =~ ^[0-9]+$ ]]
+          sha=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$BUILD_RUN_ID" --jq '
+            select(.path == ".github/workflows/android.yml" and .head_branch == "main" and .conclusion == "success")
+            | .head_sha')
+          [[ "$sha" =~ ^[a-f0-9]{40}$ ]]
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+      - uses: actions/download-artifact@v5
+        with:
+          name: huruf-wa-kalimat-android
+          path: apk-artifact
+          run-id: ${{ inputs.build_run_id }}
+          github-token: ${{ github.token }}
+      - name: Publish verified APK on GitHub Releases
+        env:
+          BUILD_SHA: ${{ steps.build.outputs.sha }}
+        working-directory: apk-artifact
+        run: |
+          sha256sum --check huruf-wa-kalimat.apk.sha256
+          version=$(gh api "repos/$GITHUB_REPOSITORY/contents/android/app/build.gradle?ref=$BUILD_SHA" --jq .content |
+            base64 --decode | sed -nE 's/^[[:space:]]*versionName "([0-9]+\.[0-9]+\.[0-9]+)"$/\1/p')
+          [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]
+          cat > release-notes.md <<'NOTES'
+          Play حروف وكلمات offline on Android 7.0 or newer. Download and open the APK on your phone to install it.
+          This is an installable debug-signed test build. A SHA-256 checksum is provided.
+          NOTES
+          gh release create "android-v$version" huruf-wa-kalimat.apk huruf-wa-kalimat.apk.sha256 \
+            --repo "$GITHUB_REPOSITORY" --target "$BUILD_SHA" \
+            --title "حروف وكلمات · Android $version" --notes-file release-notes.md
